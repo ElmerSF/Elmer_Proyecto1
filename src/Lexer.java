@@ -166,6 +166,13 @@ public class Lexer {
             // ------------------------------------------------------------
             // OPERADORES
             // ------------------------------------------------------------
+            
+            if (c == '=' && i + 1 < n && linea.charAt(i + 1) == '=') {
+                tokens.add(new Token("==", TokenType.Type.OP_INVALID));
+                i += 2;
+                continue;
+            }
+
             switch (c) {
                 case '=':
                     tokens.add(new Token("=", TokenType.Type.OP_ASSIGN));

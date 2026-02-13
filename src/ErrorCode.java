@@ -35,6 +35,7 @@ public enum ErrorCode {
     PARENTESIS_FALTANTE(121, "La sentencia Console.WriteLine debe incluir paréntesis de apertura y cierre."),
     PARENTESIS_VACIOS(122, "Los paréntesis de Console.WriteLine no pueden estar vacíos."),
     STRING_SIN_CERRAR(123, "La cadena dentro de Console.WriteLine debe iniciar y cerrar con comillas."),
+    COMENTARIO_INVALIDO(124, "Los comentarios solo son válidos si la línea inicia con un apóstrofe (')."),
 
     // ============================================================
     // MODULE

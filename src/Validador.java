@@ -6,6 +6,7 @@ Clase para validación de los tokens y reglas del lenguaje
 */
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class Validador {
 
@@ -37,18 +38,37 @@ public class Validador {
             return;
         }
 
-        Token primero = tokens.get(0);
+        // ------------------------------------------------------------
+        // 1. Manejo de comentarios según los TOKENS, no por texto
+        // ------------------------------------------------------------
+        int indiceComentario = -1;
+        for (int i = 0; i < tokens.size(); i++) {
+            if (tokens.get(i).es(TokenType.Type.COMMENT)) {
+                indiceComentario = i;
+                break;
+            }
+        }
 
-        // 1. End Module primero
-        if (esEndModule(tokens)) {
-            validarEndModule(tokens, linea, numeroLinea);
+        // Línea que es SOLO comentario → se ignora
+        if (indiceComentario == 0) {
             return;
         }
 
-        // 2. Comentarios inválidos (comentario en medio de línea)
-        String lineaTrim = linea.trim();
-        if (!lineaTrim.startsWith("'") && linea.contains("'")) {
-            errorManager.agregarError(ErrorCode.STRING_SIN_CERRAR, linea, numeroLinea);
+        // Comentario al final de una instrucción → COMENTARIO_INVALIDO
+        if (indiceComentario > 0) {
+            errorManager.agregarError(ErrorCode.COMENTARIO_INVALIDO, linea, numeroLinea);
+            // Lista nueva para no romper referencias internas
+            tokens = new ArrayList<>(tokens.subList(0, indiceComentario));
+            if (tokens.isEmpty()) {
+                return;
+            }
+        }
+
+        Token primero = tokens.get(0);
+
+        // 2. End Module primero
+        if (esEndModule(tokens)) {
+            validarEndModule(tokens, linea, numeroLinea);
             return;
         }
 
@@ -178,6 +198,18 @@ public class Validador {
             return;
         }
 
+        // Palabra reservada usada como identificador en Module (por seguridad extra)
+        if (identificador.es(TokenType.Type.MODULE) ||
+            identificador.es(TokenType.Type.END) ||
+            identificador.es(TokenType.Type.IF) ||
+            identificador.es(TokenType.Type.THEN) ||
+            identificador.es(TokenType.Type.ELSE) ||
+            identificador.es(TokenType.Type.FUNCTION)) {
+
+            errorManager.agregarError(ErrorCode.USO_PALABRA_RESERVADA_COMO_IDENTIFICADOR, linea, numeroLinea);
+            return;
+        }
+
         int indexModule = linea.indexOf("Module");
         int indexIdent = linea.indexOf(identificador.lexema);
 
@@ -264,8 +296,22 @@ public class Validador {
 
         Token identificador = tokens.get(1);
 
-        // Identificador inválido por tipo
+        // Palabra reservada usada como identificador (Dim End As Integer)
         if (!identificador.es(TokenType.Type.IDENTIFIER)) {
+
+            if (identificador.es(TokenType.Type.MODULE) ||
+                identificador.es(TokenType.Type.END) ||
+                identificador.es(TokenType.Type.IF) ||
+                identificador.es(TokenType.Type.THEN) ||
+                identificador.es(TokenType.Type.ELSE) ||
+                identificador.es(TokenType.Type.FUNCTION) ||
+                identificador.es(TokenType.Type.IMPORTS) ||
+                identificador.es(TokenType.Type.DIM) ||
+                identificador.es(TokenType.Type.AS)) {
+
+                errorManager.agregarError(ErrorCode.USO_PALABRA_RESERVADA_COMO_IDENTIFICADOR, linea, numeroLinea);
+                // No hacemos return aquí para permitir que también se marquen otros errores si aplica
+            }
 
             String lex = identificador.lexema;
 
@@ -275,7 +321,7 @@ public class Validador {
             } else if (lex.matches("^[0-9].*")) {
                 errorManager.agregarError(ErrorCode.IDENTIFICADOR_INICIA_CON_NUMERO, linea, numeroLinea);
 
-            } else {
+            } else if (!identificador.es(TokenType.Type.IDENTIFIER)) {
                 errorManager.agregarError(ErrorCode.IDENTIFICADOR_INVALIDO, linea, numeroLinea);
             }
         }
@@ -299,6 +345,20 @@ public class Validador {
         String tipoLex = tipo.lexema;
 
         boolean tipoEsValido = esTipoValido(tipoLex);
+
+        // Palabra reservada usada como tipo (Dim activo As If)
+        if (tipo.es(TokenType.Type.MODULE) ||
+            tipo.es(TokenType.Type.END) ||
+            tipo.es(TokenType.Type.IF) ||
+            tipo.es(TokenType.Type.THEN) ||
+            tipo.es(TokenType.Type.ELSE) ||
+            tipo.es(TokenType.Type.FUNCTION) ||
+            tipo.es(TokenType.Type.IMPORTS) ||
+            tipo.es(TokenType.Type.DIM)) {
+
+            errorManager.agregarError(ErrorCode.USO_PALABRA_RESERVADA_COMO_TIPO, linea, numeroLinea);
+            return;
+        }
 
         if (!tipoEsValido) {
             errorManager.agregarError(ErrorCode.TIPO_INVALIDO, linea, numeroLinea);
@@ -332,18 +392,10 @@ public class Validador {
     }
 
     private boolean esTipoValido(String tipo) {
-        // Versión incorrecta (Double no permitido)
-        // return tipo.equalsIgnoreCase("Integer") ||
-        //        tipo.equalsIgnoreCase("Double") ||
-        //        tipo.equalsIgnoreCase("String") ||
-        //        tipo.equalsIgnoreCase("Boolean");
-
-        // Versión correcta según el proyecto
         return tipo.equalsIgnoreCase("Integer") ||
                tipo.equalsIgnoreCase("String") ||
                tipo.equalsIgnoreCase("Boolean") ||
                tipo.equalsIgnoreCase("Byte");
-
     }
 
     private void validarAsignacion(List<Token> tokens, String linea, int numeroLinea, Token tipoDeclarado) {
@@ -378,21 +430,11 @@ public class Validador {
                 }
                 break;
 
-            // Caso eliminado (Double no permitido por el proyecto)
-            // case "double":
-            //     if (!valor.es(TokenType.Type.NUMBER)) {
-            //         errorManager.agregarError(ErrorCode.VALOR_NO_COMPATIBLE, linea, numeroLinea);
-            //     }
-            //     break;
-
-            // Caso agregado para Byte
             case "byte":
-                // Byte solo acepta enteros sin punto
                 if (!valor.es(TokenType.Type.NUMBER) || valor.lexema.contains(".")) {
                     errorManager.agregarError(ErrorCode.VALOR_NO_COMPATIBLE, linea, numeroLinea);
                 }
                 break;
-
 
             case "string":
                 if (!valor.es(TokenType.Type.STRING_LITERAL)) {
@@ -429,6 +471,21 @@ public class Validador {
                 continue;
             }
 
+            // Operador inválido detectado por el Lexer (==, %% si los tokenizás así)
+            if (t.es(TokenType.Type.OP_INVALID)) {
+                errorManager.agregarError(ErrorCode.OPERADOR_INVALIDO, linea, numeroLinea);
+                continue;
+            }
+
+            // Operador inválido detectado por lexema (caso %% tokenizado como '%' y '%')
+            if (t.lexema.equals("==") ||
+                t.lexema.equals("%")  ||
+                t.lexema.equals("%%")) {
+
+                errorManager.agregarError(ErrorCode.OPERADOR_INVALIDO, linea, numeroLinea);
+                continue;
+            }
+
             if (t.es(TokenType.Type.IDENTIFIER)) {
 
                 if (!symbolTable.existe(t.lexema)) {
@@ -438,14 +495,9 @@ public class Validador {
 
                 String tipoVar = symbolTable.tipoDe(t.lexema);
 
-                // Línea incorrecta (Double no permitido)
-                // if (!tipoVar.equals("integer") && !tipoVar.equals("double")) {
-
-                // Línea corregida
                 if (!tipoVar.equals("integer") && !tipoVar.equals("byte")) {
                     errorManager.agregarError(ErrorCode.OPERANDO_NO_NUMERICO, linea, numeroLinea);
                 }
-
 
                 continue;
             }

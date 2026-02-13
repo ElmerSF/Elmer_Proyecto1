@@ -49,6 +49,8 @@ public class TokenType {
     OP_MULT("^\\*$"),
     OP_DIV("^/$"),
     OP_CONCAT("^&$"),
+    OP_INVALID("^==$"),   // patrón imposible
+
 
     // ============================================================
     // SÍMBOLOS

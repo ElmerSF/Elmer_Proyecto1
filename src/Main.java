@@ -26,8 +26,8 @@ public class Main {
 
         // Encabezado
         System.out.println("--------------------------------------------------------------------------------------------------------------");
-        System.out.println("\t Analizador Léxico   Proyecto 1 UNED Estudiante: Elmer Salazar (3-426-158)");
-        System.out.println("--------------------------------------------------------------------------------------------------------------\n");
+        System.out.println("\033[32m\t Analizador Léxico   Proyecto 1 UNED Estudiante: Elmer Salazar (3-426-158)");
+        System.out.println("\033[0m --------------------------------------------------------------------------------------------------------------\n");
 
         // Validar argumentos
         if (args.length == 0) {
@@ -37,11 +37,12 @@ public class Main {
 
         String archivo = args[0];
 
+        //valida el tipo de extensión del archivo
         if (!archivo.toLowerCase().endsWith(".vb")) {
             System.out.println("El archivo debe tener extensión .vb");
             return;
         }
-
+        //detalle informativo para el usuario
         System.out.println("Ubicación actual: " + directorio);
         System.out.println("Archivo recibido: " + archivo + "\n");
 
@@ -62,7 +63,7 @@ public class Main {
         System.out.println("\033[32m                        (__/ \\__)");
         System.out.println("\033[0m");
 
-        // Infraestructura
+        // Infraestructura (instanciamos las diferentes clases)
         FileManager fm = new FileManager();
         Lexer lexer = new Lexer();
         SymbolTable symbolTable = new SymbolTable();
@@ -84,7 +85,7 @@ public class Main {
         String archivoLog = fm.crearArchivoLog(archivo, lineas);
 
         // ------------------------------------------------------------
-        // BARRA DE PROGRESO ORIGINAL (tu versión exacta)
+        // BARRA DE PROGRESO 
         // ------------------------------------------------------------
         mostrarBarraProgreso();
 
