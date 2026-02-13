@@ -1,30 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author elmer
- */
 public class TabladeExpresiones {
 
     public enum Expresion {
 
         // ============================================================
-        // LÍNEAS VACÍAS O SOLO ESPACIOS
+        // LÍNEAS VACÍAS
         // ============================================================
         LINEA_VACIA("^\\s*$"),
 
         // ============================================================
-        // COMENTARIOS (solo válidos si la línea inicia con ')
+        // COMENTARIOS
         // ============================================================
         COMENTARIO("^\\s*'.*$"),
 
         // ============================================================
-        // IMPORTS
+        // IMPORTS (incluye namespaces como System.IO)
         // ============================================================
-        IMPORTS("^\\s*Imports\\s+[A-Za-z][A-Za-z0-9_]*\\s*$"),
+        IMPORTS("^\\s*Imports\\s+[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)*\\s*$"),
 
         // ============================================================
         // MODULE <Identificador>
@@ -37,37 +28,79 @@ public class TabladeExpresiones {
         END_MODULE("^\\s*End\\s+Module\\s*$"),
 
         // ============================================================
-        // DECLARACIÓN DIM
-        // Formatos válidos:
-        // Dim x As Integer
-        // Dim x As Integer = 5
-        // Dim x As Integer = a + b * 3
+        // SUB <Identificador>()
         // ============================================================
+        SUB_DECLARACION("^\\s*Sub\\s+[A-Za-z][A-Za-z0-9_]*\\s*\\(.*\\)\\s*$"),
+
+        // ============================================================
+        // END SUB
+        // ============================================================
+        END_SUB("^\\s*End\\s+Sub\\s*$"),
+
+        // ============================================================
+        // FUNCTION <Identificador>(...) As Tipo
+        // ============================================================
+        FUNCTION_DECLARACION(
+            "^\\s*Function\\s+[A-Za-z][A-Za-z0-9_]*\\s*\\(.*\\)\\s*As\\s+(Integer|String|Boolean|Byte|Double)\\s*$"
+        ),
+
+        // ============================================================
+        // END FUNCTION
+        // ============================================================
+        END_FUNCTION("^\\s*End\\s+Function\\s*$"),
+
+        // ============================================================
+        // RETURN <expresión>
+        // ============================================================
+        RETURN("^\\s*Return\\s+.+$"),
+
+        // ============================================================
+        // IF <condición> THEN
+        // ============================================================
+        IF("^\\s*If\\s+.+\\s+Then\\s*$"),
+
+        // ============================================================
+        // ELSEIF <condición> THEN
+        // ============================================================
+        ELSEIF("^\\s*ElseIf\\s+.+\\s+Then\\s*$"),
+
+        // ============================================================
+        // ELSE
+        // ============================================================
+        ELSE("^\\s*Else\\s*$"),
+
+        // ============================================================
+        // END IF
+        // ============================================================
+        END_IF("^\\s*End\\s+If\\s*$"),
+
+        // ============================================================
+        // DECLARACIÓN DIM (solo tipos válidos del proyecto)
+        // ============================================================
+        // Línea original (comentada porque incluía Double)
+        // DIM_DECLARACION("^\\s*Dim\\s+[A-Za-z][A-Za-z0-9_]*\\s+As\\s+(Integer|String|Boolean|Double)(\\s*=\\s*.+)?$"),
+
         DIM_DECLARACION(
-            "^\\s*Dim\\s+[A-Za-z][A-Za-z0-9_]*\\s+As\\s+(Integer|String|Boolean|Double)" +
-            "(\\s*=\\s*.+)?$"
+            "^\\s*Dim\\s+[A-Za-z][A-Za-z0-9_]*\\s+As\\s+(Integer|String|Boolean|Byte)(\\s*=\\s*.+)?$"
         ),
 
         // ============================================================
         // ASIGNACIÓN SIMPLE
-        // x = 5
-        // x = a + b * 3
         // ============================================================
-        ASIGNACION(
-            "^\\s*[A-Za-z][A-Za-z0-9_]*\\s*=\\s*.+$"
-        ),
+        ASIGNACION("^\\s*[A-Za-z][A-Za-z0-9_]*\\s*=\\s*.+$"),
 
         // ============================================================
-        // Console.WriteLine("texto")
-        // Console.WriteLine(variable)
-        // Console.WriteLine("Hola " & nombre)
+        // Console.WriteLine(...)
         // ============================================================
-        CONSOLE_WRITELINE(
-            "^\\s*Console\\.WriteLine\\s*\\(.*\\)\\s*$"
-        ),
+        CONSOLE_WRITELINE("^\\s*Console\\.WriteLine\\s*\\(.*\\)\\s*$"),
 
         // ============================================================
-        // CUALQUIER OTRA LÍNEA (para detección de errores)
+        // LLAMADA A FUNCIÓN: nombre(...)
+        // ============================================================
+        LLAMADA_FUNCION("^\\s*[A-Za-z][A-Za-z0-9_]*\\s*\\(.*\\)\\s*$"),
+
+        // ============================================================
+        // CUALQUIER OTRA LÍNEA
         // ============================================================
         DESCONOCIDO(".*");
 
@@ -78,4 +111,3 @@ public class TabladeExpresiones {
         }
     }
 }
-

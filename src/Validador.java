@@ -332,10 +332,18 @@ public class Validador {
     }
 
     private boolean esTipoValido(String tipo) {
+        // Versión incorrecta (Double no permitido)
+        // return tipo.equalsIgnoreCase("Integer") ||
+        //        tipo.equalsIgnoreCase("Double") ||
+        //        tipo.equalsIgnoreCase("String") ||
+        //        tipo.equalsIgnoreCase("Boolean");
+
+        // Versión correcta según el proyecto
         return tipo.equalsIgnoreCase("Integer") ||
-               tipo.equalsIgnoreCase("Double") ||
                tipo.equalsIgnoreCase("String") ||
-               tipo.equalsIgnoreCase("Boolean");
+               tipo.equalsIgnoreCase("Boolean") ||
+               tipo.equalsIgnoreCase("Byte");
+
     }
 
     private void validarAsignacion(List<Token> tokens, String linea, int numeroLinea, Token tipoDeclarado) {
@@ -370,11 +378,21 @@ public class Validador {
                 }
                 break;
 
-            case "double":
-                if (!valor.es(TokenType.Type.NUMBER)) {
+            // Caso eliminado (Double no permitido por el proyecto)
+            // case "double":
+            //     if (!valor.es(TokenType.Type.NUMBER)) {
+            //         errorManager.agregarError(ErrorCode.VALOR_NO_COMPATIBLE, linea, numeroLinea);
+            //     }
+            //     break;
+
+            // Caso agregado para Byte
+            case "byte":
+                // Byte solo acepta enteros sin punto
+                if (!valor.es(TokenType.Type.NUMBER) || valor.lexema.contains(".")) {
                     errorManager.agregarError(ErrorCode.VALOR_NO_COMPATIBLE, linea, numeroLinea);
                 }
                 break;
+
 
             case "string":
                 if (!valor.es(TokenType.Type.STRING_LITERAL)) {
@@ -420,9 +438,14 @@ public class Validador {
 
                 String tipoVar = symbolTable.tipoDe(t.lexema);
 
-                if (!tipoVar.equals("integer") && !tipoVar.equals("double")) {
+                // Línea incorrecta (Double no permitido)
+                // if (!tipoVar.equals("integer") && !tipoVar.equals("double")) {
+
+                // Línea corregida
+                if (!tipoVar.equals("integer") && !tipoVar.equals("byte")) {
                     errorManager.agregarError(ErrorCode.OPERANDO_NO_NUMERICO, linea, numeroLinea);
                 }
+
 
                 continue;
             }

@@ -13,9 +13,14 @@ import java.util.List;
 
 public class Main {
 
-    // Manejo de errores global
+    // Manejo global de errores
     private static final ErrorManager errorManager = new ErrorManager();
     private static final String directorio = System.getProperty("user.dir");
+
+    // Activar/desactivar archivos de depuración
+    private static final boolean GENERAR_TOKENS = true;
+    private static final boolean GENERAR_SIMBOLOS = true;
+    private static final boolean GENERAR_CLASIFICACION = true;
 
     public static void main(String[] args) {
 
@@ -75,8 +80,13 @@ public class Main {
             return;
         }
 
-        // Crear archivo .log con numeración de líneas
+        // Crear archivo .log con numeración
         String archivoLog = fm.crearArchivoLog(archivo, lineas);
+
+        // ------------------------------------------------------------
+        // BARRA DE PROGRESO ORIGINAL (tu versión exacta)
+        // ------------------------------------------------------------
+        mostrarBarraProgreso();
 
         // Procesar línea por línea
         for (int i = 0; i < lineas.length; i++) {
@@ -84,31 +94,43 @@ public class Main {
             String linea = lineas[i];
             int numeroLinea = i + 1;
 
-            // 1. Clasificar la línea completa con TabladeExpresiones
+            // 1. Clasificar línea completa
             TabladeExpresiones.Expresion tipoLinea = clasificarLinea(linea);
 
-            // Línea vacía o comentario → no se valida más
-            if (tipoLinea == TabladeExpresiones.Expresion.LINEA_VACIA ||
-                tipoLinea == TabladeExpresiones.Expresion.COMENTARIO) {
-                continue;
-            }
-
-            // 2. Tokenizar con Lexer (usando TokenType)
+            // 2. Tokenizar
             List<Token> tokens = lexer.tokenizar(linea);
 
-            // 3. Validar semántica/sintaxis con Validador
+            // 3. Validar
             validador.validarLinea(tokens, linea, numeroLinea);
         }
 
-        // Validación al final del archivo (End Module, etc.)
+        // Validación final del archivo
         validador.validarFinDeArchivo(lineas.length);
 
-        // Escribir errores al .log
+        // Escribir errores
         fm.escribirErrores(archivoLog, errorManager);
 
-        System.out.println("\nAnálisis completado. Archivo log generado: " + archivoLog);
+        // ------------------------------------------------------------
+        // ARCHIVOS OPCIONALES DE DEPURACIÓN
+        // ------------------------------------------------------------
+        if (GENERAR_TOKENS) {
+            fm.escribirTokensPorLinea(archivo, lineas, lexer);
+        }
+
+        if (GENERAR_SIMBOLOS) {
+            fm.escribirTablaSimbolos(archivo, symbolTable);
+        }
+
+        if (GENERAR_CLASIFICACION) {
+            fm.escribirClasificacionLineas(archivo, lineas);
+        }
+
+        System.out.println("\n\nAnálisis completado. Archivo log generado: " + archivoLog);
     }
 
+    // ============================================================
+    // CLASIFICAR LÍNEA SEGÚN TABLADEEXPRESIONES
+    // ============================================================
     private static TabladeExpresiones.Expresion clasificarLinea(String linea) {
         for (TabladeExpresiones.Expresion exp : TabladeExpresiones.Expresion.values()) {
             if (linea.matches(exp.patron)) {
@@ -116,5 +138,19 @@ public class Main {
             }
         }
         return TabladeExpresiones.Expresion.DESCONOCIDO;
+    }
+
+    // ============================================================
+    // BARRA DE PROGRESO ORIGINAL DEL PROYECTO
+    // ============================================================
+    public static void mostrarBarraProgreso() {
+        System.out.print("\nProcesando: \033[32m");
+        for (int i = 0; i < 35; i++) {
+            System.out.print(">");
+            try {
+                Thread.sleep(60);
+            } catch (InterruptedException e) {}
+        }
+        System.out.println("\033[0m 100%");
     }
 }

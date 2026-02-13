@@ -5,21 +5,22 @@ I Cuatrimestre 2026
 Clase para manejo de los archivos 
 -Leer el archivo .vb línea por línea
 - Crear el archivo .log con numeración de 4 dígitos
--Escribe los errores
+- Escribe los errores
+- (Opcional) Escribir tokens por línea
+- (Opcional) Mostrar tabla de símbolos
+- (Opcional) Clasificar líneas según TabladeExpresiones
 */
 
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileManager {
 
-public String[] leerArchivo(String nombreArchivo) {
+    // ============================================================
+    // LECTURA DEL ARCHIVO
+    // ============================================================
+    public String[] leerArchivo(String nombreArchivo) {
 
         try {
             File archivo = new File(nombreArchivo);
@@ -28,19 +29,16 @@ public String[] leerArchivo(String nombreArchivo) {
                 System.out.println("El archivo indicado no existe: " + nombreArchivo);
                 return null;
             }
-            //areglo de lienas
+
             ArrayList<String> lineas = new ArrayList<>();
-
             BufferedReader br = new BufferedReader(new FileReader(archivo));
-            String linea;
 
-            // Leemos línea por línea SIN modificar espacios ni formato
+            String linea;
             while ((linea = br.readLine()) != null) {
                 lineas.add(linea);
             }
 
             br.close();
-                //se retorna un arreglo de líneas
             return lineas.toArray(new String[0]);
 
         } catch (Exception e) {
@@ -48,13 +46,16 @@ public String[] leerArchivo(String nombreArchivo) {
             return null;
         }
     }
-public String crearArchivoLog(String nombreArchivo, String[] lineas) {
+
+    // ============================================================
+    // CREAR ARCHIVO LOG CON NUMERACIÓN
+    // ============================================================
+    public String crearArchivoLog(String nombreArchivo, String[] lineas) {
 
         try {
-            // Obtener nombre base sin extensión
             String nombreBase;
-
             int punto = nombreArchivo.lastIndexOf('.');
+
             if (punto > 0) {
                 nombreBase = nombreArchivo.substring(0, punto);
             } else {
@@ -63,70 +64,14 @@ public String crearArchivoLog(String nombreArchivo, String[] lineas) {
 
             String nombreLog = nombreBase + "-errores.log";
 
-            FileWriter fw = new FileWriter(nombreLog, false); // false = sobrescribir
+            FileWriter fw = new FileWriter(nombreLog, false);
             PrintWriter pw = new PrintWriter(fw);
 
-            // <editor-fold defaultstate="collapsed" desc="Intento para manejar la numeración del archivo">
- /*
-                  if (contador < 8) {
-
-                    pendiente = (pendiente + " " + revi.AnalizaTexto(linea)+" "+revi.ada());
-                    reglonerror.println("0000" + contador + " " + linea + " ");
-
-                    contador++;
-                } else {
-                    if (contador == 8) {
-                        Respuesta = (Respuesta + revi.AnalizaTexto(linea));
-                        reglonerror.println("0000" + contador + " " + linea + " " + pendiente + Respuesta);
-                        contador++;
-                    } else {
-
-                        if (contador <10) {
-                            Respuesta = (Respuesta + revi.AnalizaTexto(linea));
-                            reglonerror.println("0000" + contador + " " + linea + " " + Respuesta+" "+revi.ada());
-                            contador++;
-                        } else {
-                            if (contador < 100) {
-                                Respuesta = revi.AnalizaTexto(linea);
-                                reglonerror.println("000" + contador + " " + linea + " " + Respuesta+" "+revi.ada());
-                                contador++;
-                            } else {
-                                if (contador < 1000) {
-                                    Respuesta = revi.AnalizaTexto(linea);
-                                    reglonerror.println("00" + contador + " " + linea + " " + Respuesta+" "+revi.ada());
-                                    contador++;
-                                } else {
-                                    if (contador < 10000) {
-                                        Respuesta = revi.AnalizaTexto(linea);
-                                        reglonerror.println("0" + contador + " " + linea + " " + Respuesta+" "+revi.ada());
-                                        contador++;
-                                    } else {
-                                        Respuesta = revi.AnalizaTexto(linea);
-                                        reglonerror.println(contador + " " + linea + " " + Respuesta+" "+revi.ada());
-                                        contador++;
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-            
-            */
-// </editor-fold>
-   
-            // Escribimos cada línea con numeración de 4 dígitos
             for (int i = 0; i < lineas.length; i++) {
-                int numeroLinea = i + 1;
-                String numeroFormateado = String.format("%04d", numeroLinea);
-                String contenido = lineas[i];
-
-                // Respetar exactamente el contenido original
-                pw.println(numeroFormateado + " " + contenido);
+                String numero = String.format("%04d", i + 1);
+                pw.println(numero + " " + lineas[i]);
             }
 
-            pw.flush();
             pw.close();
             fw.close();
 
@@ -137,7 +82,11 @@ public String crearArchivoLog(String nombreArchivo, String[] lineas) {
             return null;
         }
     }
- public void escribirErrores(String nombreLog, ErrorManager errorManager) {
+
+    // ============================================================
+    // ESCRIBIR ERRORES
+    // ============================================================
+    public void escribirErrores(String nombreLog, ErrorManager errorManager) {
 
         try {
             if (nombreLog == null) {
@@ -147,12 +96,10 @@ public String crearArchivoLog(String nombreArchivo, String[] lineas) {
 
             List<Error> errores = errorManager.getErrores();
 
-            // Si no hay errores, no agregamos nada extra
             if (errores == null || errores.isEmpty()) {
                 return;
             }
 
-            // Abrimos el .log en modo append (true)
             FileWriter fw = new FileWriter(nombreLog, true);
             PrintWriter pw = new PrintWriter(fw);
 
@@ -162,13 +109,10 @@ public String crearArchivoLog(String nombreArchivo, String[] lineas) {
             pw.println("------------------------------------------------------------");
 
             for (Error err : errores) {
-                // Formato sugerido:
-                // Error 200. Línea 0001. Descripción...
                 String lineaFormateada = String.format("%04d", err.getLinea());
                 pw.println("Error " + err.getNumero() + ". Línea " + lineaFormateada + ". " + err.getDescripcion());
             }
 
-            pw.flush();
             pw.close();
             fw.close();
 
@@ -176,5 +120,96 @@ public String crearArchivoLog(String nombreArchivo, String[] lineas) {
             System.out.println("Error al escribir errores en el .log: " + e.getMessage());
         }
     }
-    
+
+    // ============================================================
+    // OPCIONAL: ESCRIBIR TOKENS POR LÍNEA
+    // ============================================================
+    public void escribirTokensPorLinea(String nombreArchivo, String[] lineas, Lexer lexer) {
+
+        try {
+            String nombreSalida = nombreArchivo + "-tokens.txt";
+            PrintWriter pw = new PrintWriter(new FileWriter(nombreSalida));
+
+            pw.println("=== LISTA DE TOKENS POR LÍNEA ===\n");
+
+            for (int i = 0; i < lineas.length; i++) {
+                String numero = String.format("%04d", i + 1);
+                pw.println(numero + "  " + lineas[i]);
+
+                List<Token> tokens = lexer.tokenizar(lineas[i]);
+
+                for (Token t : tokens) {
+                    pw.println("      " + t);
+                }
+
+                pw.println();
+            }
+
+            pw.close();
+            System.out.println("Archivo generado: " + nombreSalida);
+
+        } catch (Exception e) {
+            System.out.println("Error al escribir tokens: " + e.getMessage());
+        }
+    }
+
+    // ============================================================
+    // OPCIONAL: MOSTRAR TABLA DE SÍMBOLOS
+    // ============================================================
+    public void escribirTablaSimbolos(String nombreArchivo, SymbolTable tabla) {
+
+        try {
+            String nombreSalida = nombreArchivo + "-simbolos.txt";
+            PrintWriter pw = new PrintWriter(new FileWriter(nombreSalida));
+
+            pw.println("=== TABLA DE SÍMBOLOS ===\n");
+            pw.println(tabla.toString());
+
+            pw.close();
+            System.out.println("Archivo generado: " + nombreSalida);
+
+        } catch (Exception e) {
+            System.out.println("Error al escribir tabla de símbolos: " + e.getMessage());
+        }
+    }
+
+    // ============================================================
+    // OPCIONAL: CLASIFICAR LÍNEAS SEGÚN TABLADEEXPRESIONES
+    // ============================================================
+    public void escribirClasificacionLineas(String nombreArchivo, String[] lineas) {
+
+        try {
+            String nombreSalida = nombreArchivo + "-clasificacion.txt";
+            PrintWriter pw = new PrintWriter(new FileWriter(nombreSalida));
+
+            pw.println("=== CLASIFICACIÓN DE LÍNEAS ===\n");
+
+            for (int i = 0; i < lineas.length; i++) {
+
+                String numero = String.format("%04d", i + 1);
+                String linea = lineas[i];
+
+                TabladeExpresiones.Expresion tipo = clasificar(linea);
+
+                pw.println(numero + "  " + linea);
+                pw.println("      → " + tipo.name());
+                pw.println();
+            }
+
+            pw.close();
+            System.out.println("Archivo generado: " + nombreSalida);
+
+        } catch (Exception e) {
+            System.out.println("Error al clasificar líneas: " + e.getMessage());
+        }
+    }
+
+    private TabladeExpresiones.Expresion clasificar(String linea) {
+        for (TabladeExpresiones.Expresion exp : TabladeExpresiones.Expresion.values()) {
+            if (linea.matches(exp.patron)) {
+                return exp;
+            }
+        }
+        return TabladeExpresiones.Expresion.DESCONOCIDO;
+    }
 }
