@@ -20,7 +20,7 @@ public enum ErrorCode {
     VARIABLE_NO_DECLARADA(110, "Se está utilizando una variable que no ha sido declarada."),
     OPERADOR_INVALIDO(111, "Operador inválido en la operación matemática."),
     OPERANDO_INVALIDO(112, "Operando inválido en la operación matemática."),
-    USO_PALABRA_RESERVADA_COMO_TIPO(113, "Los tipos válidos son: Integer, String, Boolean y Double."),
+    USO_PALABRA_RESERVADA_COMO_TIPO(113, "Los tipos válidos son: Integer, String, Boolean y Byte."),
     USO_PALABRA_RESERVADA_COMO_IDENTIFICADOR(114, "No se puede usar una palabra reservada como identificador."),
     DECLARACION_INCOMPLETA(115, "Declaración Dim incompleta."),
     FALTA_IGUAL(116, "Se esperaba el operador '=' en la asignación."),

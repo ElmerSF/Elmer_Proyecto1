@@ -142,7 +142,7 @@ public class Main {
     }
 
     // ============================================================
-    // BARRA DE PROGRESO ORIGINAL DEL PROYECTO
+    // BARRA DE PROGRESO APOYO VISUAL
     // ============================================================
     public static void mostrarBarraProgreso() {
         System.out.print("\nProcesando: \033[32m");
