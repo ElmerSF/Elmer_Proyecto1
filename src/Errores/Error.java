@@ -1,3 +1,5 @@
+package Errores;
+
 /*
 UNED Informática Compiladores 3307
 Estudiante Elmer Eduardo Salazar Flores 3-0426-0158

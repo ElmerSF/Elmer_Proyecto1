@@ -1,3 +1,5 @@
+package Validaciones;
+
 /*
 UNED Informática Compiladores 3307
 Estudiante Elmer Eduardo Salazar Flores 3-0426-0158
@@ -5,6 +7,11 @@ I Cuatrimestre 2026
 Clase para validación de los tokens y reglas del lenguaje
 */
 
+import Lexer.Token;
+import Lexer.TokenType;
+import Simbolos.SymbolTable;
+import Errores.ErrorCode;
+import Errores.ErrorManager;
 import java.util.List;
 import java.util.ArrayList;
 

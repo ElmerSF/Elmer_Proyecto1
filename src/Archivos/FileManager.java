@@ -1,3 +1,5 @@
+package Archivos;
+
 /*
 UNED Informática Compiladores 3307
 Estudiante Elmer Eduardo Salazar Flores 3-0426-0158
@@ -11,6 +13,12 @@ Clase para manejo de los archivos
 - (Opcional) Clasificar líneas según TabladeExpresiones
 */
 
+import Lexer.Token;
+import Simbolos.SymbolTable;
+import Simbolos.TabladeExpresiones;
+import Lexer.Lexer;
+import Errores.ErrorManager;
+import Errores.Error;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;

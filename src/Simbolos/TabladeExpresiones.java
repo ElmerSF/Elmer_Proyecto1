@@ -1,3 +1,5 @@
+package Simbolos;
+
 public class TabladeExpresiones {
 
     public enum Expresion {

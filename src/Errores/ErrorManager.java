@@ -1,3 +1,5 @@
+package Errores;
+
 /*
 UNED Informática Compiladores 3307
 Estudiante Elmer Eduardo Salazar Flores 3-0426-0158
@@ -6,6 +8,7 @@ Clase para manejo de los errores encontrados
 */
 
 
+import Errores.Error;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
