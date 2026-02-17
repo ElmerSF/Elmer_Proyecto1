@@ -1,16 +1,25 @@
-package Errores;
-
 /*
 UNED Informática Compiladores 3307
 Estudiante: Elmer Eduardo Salazar Flores 3-0426-0158
 I Cuatrimestre 2026
-Enumeración de códigos de error del analizador
+
+Enumeración que define todos los códigos de error utilizados por el analizador.
+Cada error tiene:
+ - un número único (código),
+ - un mensaje descriptivo,
+ - y pertenece a una categoría (Dim, Console.WriteLine, Module, End Module, etc.).
+
+Esta estructura permite que el Validador y el ErrorManager trabajen con errores
+de forma consistente, centralizada y fácil de mantener.
+Se usó apoyo de IA para revisión y pruebas del código así como ordenarlo 
 */
+
+package Errores;
 
 public enum ErrorCode {
 
     // ============================================================
-    // DIM
+    // DIM — Errores relacionados con declaraciones de variables
     // ============================================================
     IDENTIFICADOR_INVALIDO(101, "Se esperaba un identificador después de 'Dim'."),
     FALTA_AS(102, "Se esperaba la palabra reservada 'As'."),
@@ -32,7 +41,7 @@ public enum ErrorCode {
     IDENTIFICADOR_CON_ESPACIOS(120, "Un identificador no puede contener espacios."),
 
     // ============================================================
-    // Console.WriteLine
+    // Console.WriteLine — Errores de impresión y sintaxis
     // ============================================================
     PARENTESIS_FALTANTE(121, "La sentencia Console.WriteLine debe incluir paréntesis de apertura y cierre."),
     PARENTESIS_VACIOS(122, "Los paréntesis de Console.WriteLine no pueden estar vacíos."),
@@ -40,36 +49,54 @@ public enum ErrorCode {
     COMENTARIO_INVALIDO(124, "Los comentarios solo son válidos si la línea inicia con un apóstrofe (')."),
 
     // ============================================================
-    // MODULE
+    // MODULE — Errores en la declaración del módulo principal
     // ============================================================
     MODULE_ANTES_DE_IMPORTS(130, "La sentencia Module debe aparecer después de Imports."),
     MODULE_SIN_IDENTIFICADOR(131, "Se esperaba un identificador después de 'Module'."),
     MODULE_ESPACIO_INCORRECTO(132, "Debe existir un único espacio entre 'Module' y el identificador."),
 
     // ============================================================
-    // END MODULE
+    // END MODULE — Errores en el cierre del módulo
     // ============================================================
     ENDMODULE_ESPACIO_INCORRECTO(140, "Debe existir un único espacio entre 'End' y 'Module'."),
     ENDMODULE_TIENE_TOKENS_EXTRA(141, "La sentencia 'End Module' no debe contener tokens adicionales."),
     ENDMODULE_DUPLICADO(142, "Se encontró más de un 'End Module' válido."),
     ENDMODULE_NO_ES_ULTIMA_LINEA(143, "'End Module' debe ser la última línea con contenido del archivo.");
 
-    private final int codigo;
-    private final String mensaje;
+    // ============================================================
+    // CAMPOS INTERNOS
+    // ============================================================
+    private final int codigo;      // Número único del error
+    private final String mensaje;  // Descripción del error
 
+    /**
+     * Constructor del enum.
+     * @param codigo  Número del error
+     * @param mensaje Mensaje descriptivo asociado
+     */
     ErrorCode(int codigo, String mensaje) {
         this.codigo = codigo;
         this.mensaje = mensaje;
     }
 
+    /**
+     * Devuelve el número del error.
+     */
     public int getCodigo() {
         return codigo;
     }
 
+    /**
+     * Devuelve el mensaje descriptivo del error.
+     */
     public String getMensaje() {
         return mensaje;
     }
 
+    /**
+     * Representación legible del error.
+     * Ejemplo: "Error 102. Se esperaba la palabra reservada 'As'."
+     */
     @Override
     public String toString() {
         return "Error " + codigo + ". " + mensaje;

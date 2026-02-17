@@ -1,5 +1,3 @@
-package App;
-
 /*
 UNED Informática Compiladores 3307
 Estudiante: Elmer Eduardo Salazar Flores 3-0426-0158
@@ -10,6 +8,9 @@ ASCII art basado en colecciones anónimas de:
 ASCII Art Archive. (n.d.). ASCII Art Gallery. https://www.asciiart.eu/gallery
 Modificado para uso en el Proyecto 1 de Compiladores (UNED).
 */
+
+package App;
+
 import Lexer.Token;
 import Simbolos.SymbolTable;
 import Archivos.FileManager;
@@ -19,9 +20,6 @@ import Errores.ErrorManager;
 import Simbolos.TabladeExpresiones;
 
 import java.util.List;
-
-
-
 
 public class Main {
 

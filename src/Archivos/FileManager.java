@@ -1,5 +1,3 @@
-package Archivos;
-
 /*
 UNED Informática Compiladores 3307
 Estudiante Elmer Eduardo Salazar Flores 3-0426-0158
@@ -11,7 +9,10 @@ Clase para manejo de los archivos
 - (Opcional) Escribir tokens por línea
 - (Opcional) Mostrar tabla de símbolos
 - (Opcional) Clasificar líneas según TabladeExpresiones
+Se usó apoyo de IA para revisión y pruebas del código así como ordenarlo 
 */
+
+package Archivos;
 
 import Lexer.Token;
 import Simbolos.SymbolTable;
@@ -33,11 +34,13 @@ public class FileManager {
         try {
             File archivo = new File(nombreArchivo);
 
+            //Si el archivo no se encuentra
             if (!archivo.exists()) {
                 System.out.println("El archivo indicado no existe: " + nombreArchivo);
                 return null;
             }
-
+            
+            //Genera un arreglo de lista tipo string llamado lineas
             ArrayList<String> lineas = new ArrayList<>();
             BufferedReader br = new BufferedReader(new FileReader(archivo));
 
@@ -59,7 +62,8 @@ public class FileManager {
     // CREAR ARCHIVO LOG CON NUMERACIÓN
     // ============================================================
     public String crearArchivoLog(String nombreArchivo, String[] lineas) {
-
+            
+        //Buscar la raíz del nombre para colocar el arhcivo de errores.log
         try {
             String nombreBase;
             int punto = nombreArchivo.lastIndexOf('.');
@@ -74,7 +78,59 @@ public class FileManager {
 
             FileWriter fw = new FileWriter(nombreLog, false);
             PrintWriter pw = new PrintWriter(fw);
+            
+            
+            // <editor-fold defaultstate="collapsed" desc="Intento para manejar la numeración del archivo">
+ /*
+                  if (contador < 8) {
 
+                    pendiente = (pendiente + " " + revi.AnalizaTexto(linea)+" "+revi.ada());
+                    reglonerror.println("0000" + contador + " " + linea + " ");
+
+                    contador++;
+                } else {
+                    if (contador == 8) {
+                        Respuesta = (Respuesta + revi.AnalizaTexto(linea));
+                        reglonerror.println("0000" + contador + " " + linea + " " + pendiente + Respuesta);
+                        contador++;
+                    } else {
+
+                        if (contador <10) {
+                            Respuesta = (Respuesta + revi.AnalizaTexto(linea));
+                            reglonerror.println("0000" + contador + " " + linea + " " + Respuesta+" "+revi.ada());
+                            contador++;
+                        } else {
+                            if (contador < 100) {
+                                Respuesta = revi.AnalizaTexto(linea);
+                                reglonerror.println("000" + contador + " " + linea + " " + Respuesta+" "+revi.ada());
+                                contador++;
+                            } else {
+                                if (contador < 1000) {
+                                    Respuesta = revi.AnalizaTexto(linea);
+                                    reglonerror.println("00" + contador + " " + linea + " " + Respuesta+" "+revi.ada());
+                                    contador++;
+                                } else {
+                                    if (contador < 10000) {
+                                        Respuesta = revi.AnalizaTexto(linea);
+                                        reglonerror.println("0" + contador + " " + linea + " " + Respuesta+" "+revi.ada());
+                                        contador++;
+                                    } else {
+                                        Respuesta = revi.AnalizaTexto(linea);
+                                        reglonerror.println(contador + " " + linea + " " + Respuesta+" "+revi.ada());
+                                        contador++;
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            
+            */
+// </editor-fold>
+   
+            //colocar el numerador de 4 dígitos
             for (int i = 0; i < lineas.length; i++) {
                 String numero = String.format("%04d", i + 1);
                 pw.println(numero + " " + lineas[i]);
@@ -92,7 +148,7 @@ public class FileManager {
     }
 
     // ============================================================
-    // ESCRIBIR ERRORES
+    // ESCRIBIR ERRORES los errores se escriben hasta el final del archivo
     // ============================================================
     public void escribirErrores(String nombreLog, ErrorManager errorManager) {
 
@@ -101,7 +157,7 @@ public class FileManager {
                 System.out.println("No se puede escribir errores: archivo .log nulo.");
                 return;
             }
-
+             //hace un listado de errores de la calse ErrorManager
             List<Error> errores = errorManager.getErrores();
 
             if (errores == null || errores.isEmpty()) {
@@ -116,6 +172,13 @@ public class FileManager {
             pw.println("ERRORES DETECTADOS:");
             pw.println("------------------------------------------------------------");
 
+            // Recorre la lista de errores generados durante la validación y escribe cada uno
+            // en el archivo de salida con un formato uniforme. El número de línea se formatea
+            // a 4 dígitos con ceros a la izquierda (ej. 3 → "0003") para facilitar la lectura
+            // y el ordenamiento. Cada línea del reporte incluye: número de error, línea donde
+            // ocurrió y la descripción detallada del problema.
+
+            
             for (Error err : errores) {
                 String lineaFormateada = String.format("%04d", err.getLinea());
                 pw.println("Error " + err.getNumero() + ". Línea " + lineaFormateada + ". " + err.getDescripcion());
@@ -130,7 +193,8 @@ public class FileManager {
     }
 
     // ============================================================
-    // OPCIONAL: ESCRIBIR TOKENS POR LÍNEA
+    // OPCIONAL: ESCRIBIR TOKENS POR LÍNEA (esto se hizo como una validación intermedia en el momento de 
+    // escritura del código
     // ============================================================
     public void escribirTokensPorLinea(String nombreArchivo, String[] lineas, Lexer lexer) {
 
@@ -162,7 +226,8 @@ public class FileManager {
     }
 
     // ============================================================
-    // OPCIONAL: MOSTRAR TABLA DE SÍMBOLOS
+    // OPCIONAL: MOSTRAR TABLA DE SÍMBOLOS  (esto se hizo como una validación intermedia en el momento de 
+    // escritura del código
     // ============================================================
     public void escribirTablaSimbolos(String nombreArchivo, SymbolTable tabla) {
 
@@ -182,7 +247,8 @@ public class FileManager {
     }
 
     // ============================================================
-    // OPCIONAL: CLASIFICAR LÍNEAS SEGÚN TABLADEEXPRESIONES
+    // OPCIONAL: CLASIFICAR LÍNEAS SEGÚN TABLADEEXPRESIONES  (esto se hizo como una validación intermedia en el momento de 
+    // escritura del código
     // ============================================================
     public void escribirClasificacionLineas(String nombreArchivo, String[] lineas) {
 

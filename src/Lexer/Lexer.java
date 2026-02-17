@@ -1,12 +1,11 @@
-package Lexer;
-
 /*
 UNED Informática Compiladores 3307
 Estudiante: Elmer Eduardo Salazar Flores 3-0426-0158
 I Cuatrimestre 2026
 Clase para tokenizar cada línea del archivo fuente
+Se usó apoyo de IA para revisión y pruebas del código así como ordenarlo
 */
-
+package Lexer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,10 +51,14 @@ public class Lexer {
             // STRINGS ENTRE COMILLAS ASCII
             // ------------------------------------------------------------
             if (c == '"') {
+                
+                //se guarda la posición actual y empieza a recorrer cada caracter
                 int inicio = i;
                 i++;
 
                 StringBuilder sb = new StringBuilder();
+                
+                //va guardando cada caracter
                 sb.append('"');
 
                 boolean cerrado = false;
@@ -64,6 +67,7 @@ public class Lexer {
                     char d = linea.charAt(i);
                     sb.append(d);
 
+                    //hasta que encuetre la comilla de cierre
                     if (d == '"') {
                         cerrado = true;
                         i++;
@@ -71,7 +75,7 @@ public class Lexer {
                     }
                     i++;
                 }
-
+                    // si no se encuentra comillas de cierre se marca 
                 tokens.add(new Token(sb.toString(),
                         cerrado ? TokenType.Type.STRING_LITERAL : TokenType.Type.UNKNOWN));
                 continue;
@@ -127,7 +131,8 @@ public class Lexer {
                 }
 
                 String lexema = linea.substring(inicio, i);
-
+                
+                //si tiene letras 
                 if (tieneLetras) {
                     tokens.add(new Token(lexema, TokenType.Type.UNKNOWN));
                 } else {
@@ -222,6 +227,7 @@ public class Lexer {
                 i++;
                 continue;
             }
+        
 
             // ------------------------------------------------------------
             // CUALQUIER OTRO CARÁCTER → UNKNOWN
