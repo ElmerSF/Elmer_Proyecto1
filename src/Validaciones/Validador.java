@@ -256,6 +256,9 @@ public class Validador {
         }
 
         // Validación del espacio exacto entre "Module" y el nombre
+        //le pedimos el número donde empieza module ejemplo 0
+        //le pedimos el número donde empieza el proximo lexema 7
+        //restamos la y debe dar 7 si da más que eso es que hay espacios en medio
         int indexModule = linea.indexOf("Module");
         int indexIdent = linea.indexOf(identificador.lexema);
 
@@ -343,7 +346,7 @@ public class Validador {
             errorManager.agregarError(ErrorCode.DECLARACION_INCOMPLETA, linea, numeroLinea);
             return;
         }
-
+        //Pasamos a revisar el próximo token para validar
         Token identificador = tokens.get(1);
 
         // Validación del identificador
@@ -444,7 +447,7 @@ public class Validador {
             errorManager.agregarError(ErrorCode.TOKENS_EXTRA, linea, numeroLinea);
         }
     }
-
+    //tipos validos de variables
     private boolean esTipoValido(String tipo) {
         return tipo.equalsIgnoreCase("Integer") ||
                tipo.equalsIgnoreCase("String") ||

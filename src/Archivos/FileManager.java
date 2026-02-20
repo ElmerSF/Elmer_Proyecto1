@@ -157,7 +157,7 @@ public class FileManager {
                 System.out.println("No se puede escribir errores: archivo .log nulo.");
                 return;
             }
-             //hace un listado de errores de la calse ErrorManager
+             //hace un listado de errores de la clase ErrorManager
             List<Error> errores = errorManager.getErrores();
 
             if (errores == null || errores.isEmpty()) {

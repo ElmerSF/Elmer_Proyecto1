@@ -37,8 +37,7 @@ Debe descargarlo desde el sitio oficial:
 
     https://www.oracle.com/java/technologies/downloads/
 
-Descargue la versión más reciente de:
-    Java SE Development Kit (JDK)
+Descargue la versión más reciente.
 
 Instale el programa siguiendo las instrucciones en pantalla.
 
@@ -56,8 +55,8 @@ Use el comando:
     cd ruta_de_la_carpeta
 
 Ejemplos:
-    cd C:\Users\Elmer\Desktop\Proyecto1
-    cd D:\UNED\Compiladores\Proyecto1
+    cd C:\Users\Elmer\Desktop\Elmer_Salazar_Proyecto1
+    cd D:\UNED\Compiladores\Elmer_Salazar_Proyecto1
 
 Para ver los archivos dentro de la carpeta puede usar:
 
@@ -66,10 +65,10 @@ Para ver los archivos dentro de la carpeta puede usar:
 ------------------------------------------------------------
 5. PREPARAR EL ARCHIVO .VB A ANALIZAR
 ------------------------------------------------------------
-El archivo que desea analizar debe estar en la misma carpeta que el .jar.
+El archivo que desea analizar puede estar en la misma carpeta que el .jar o encontrarse en otra carpeta
 
-Ejemplo:
-    Proyecto1.jar
+Ejemplo estando en la misma carpeta:
+    Elmer_Salazar_Proyecto1.jar
     archivo_prueba.vb
 
 ------------------------------------------------------------
@@ -77,7 +76,8 @@ Ejemplo:
 ------------------------------------------------------------
 En la consola escriba:
 
-    java -jar Proyecto1.jar archivo_prueba.vb
+    java -jar Elmer_Salazar_Proyecto1.jar archivo_prueba.vb (si el archivo de prueba vb está en la misma carpeta)
+    java -jar Elmer_Salazar_Proyecto1.jar "cd C:\Users\elmerarchivo_prueba.vb" (si el archivo está en otra carpeta
 
 Luego presione Enter.
 
