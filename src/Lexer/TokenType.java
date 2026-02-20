@@ -56,7 +56,7 @@ public class TokenType {
         OP_MULT("^\\*$"),
         OP_DIV("^/$"),
         OP_CONCAT("^&$"),
-        OP_INVALID("^==$"),   // patrón imposible, útil para pruebas
+        OP_INVALID("^==$"),   // patrón imposible, no es parte de vb
 
         // ============================================================
         // SÍMBOLOS

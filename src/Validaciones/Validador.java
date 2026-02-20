@@ -63,13 +63,17 @@ public class Validador {
         // se marca como COMENTARIO_INVALIDO.
         int indiceComentario = -1;
         for (int i = 0; i < tokens.size(); i++) {
+            
             if (tokens.get(i).es(TokenType.Type.COMMENT)) {
+                //Si se encuentra un comentario en la línea se asigna el valor de i 
+                //indice de comentario
                 indiceComentario = i;
                 break;
             }
         }
 
         // Línea que es SOLO comentario → se ignora completamente
+        //se encontró un solo comentario en la línea
         if (indiceComentario == 0) {
             return;
         }
@@ -136,11 +140,13 @@ public class Validador {
         if (primero.es(TokenType.Type.DIM)) {
 
             // Dim antes de Module → error
+            //ya no se sigue validando más esa declaración de DIM porque se tiene un error Primario
             if (!moduleEncontrado) {
                 errorManager.agregarError(ErrorCode.DIM_ANTES_DE_MODULE, linea, numeroLinea);
                 return;
             }
-
+            
+            
             validarDeclaracionDim(tokens, linea, numeroLinea);
             return;
         }
@@ -171,7 +177,8 @@ public class Validador {
         // Validación del espacio exacto entre End y Module
         int indexEnd = linea.indexOf("End");
         int indexModule = linea.indexOf("Module");
-
+        
+        //se resta los indices de inicio y si la diferencia es distinta de 4
         if (indexModule - indexEnd != 4) {
             errorManager.agregarError(ErrorCode.ENDMODULE_ESPACIO_INCORRECTO, linea, numeroLinea);
             return;
@@ -182,7 +189,7 @@ public class Validador {
             errorManager.agregarError(ErrorCode.ENDMODULE_TIENE_TOKENS_EXTRA, linea, numeroLinea);
             return;
         }
-
+        //esta "bandera" indica que se ha validado ya un token como End Module
         cantidadEndModule++;
         lineaEndModule = numeroLinea;
     }
@@ -383,6 +390,7 @@ public class Validador {
         Token asToken = tokens.get(2);
 
         // Identificador con espacios (ej: "mi var As Integer")
+        //si lo que sigue es otro identificador quiere decir que hay un espacio y un identificador compuesto
         if (asToken.es(TokenType.Type.IDENTIFIER) &&
             tokens.size() > 3 &&
             tokens.get(3).es(TokenType.Type.AS)) {

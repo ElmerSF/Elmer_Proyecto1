@@ -28,9 +28,9 @@ public class Main {
     private static final String directorio = System.getProperty("user.dir");
 
     // Activar/desactivar archivos de depuración
-    private static final boolean GENERAR_TOKENS = true;
-    private static final boolean GENERAR_SIMBOLOS = true;
-    private static final boolean GENERAR_CLASIFICACION = true;
+    private static final boolean GENERAR_TOKENS = false;
+    private static final boolean GENERAR_SIMBOLOS = false;
+    private static final boolean GENERAR_CLASIFICACION = false;
 
     public static void main(String[] args) {
 
@@ -144,6 +144,7 @@ public class Main {
     // ============================================================
     private static TabladeExpresiones.Expresion clasificarLinea(String linea) {
         for (TabladeExpresiones.Expresion exp : TabladeExpresiones.Expresion.values()) {
+            //ser revisa con cual de los patrones se identifica
             if (linea.matches(exp.patron)) {
                 return exp;
             }

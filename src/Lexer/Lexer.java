@@ -56,6 +56,7 @@ public class Lexer {
                 int inicio = i;
                 i++;
 
+                //StringBuilder es una clase mutable que permite construir cadenas de texto de forma eficiente.
                 StringBuilder sb = new StringBuilder();
                 
                 //va guardando cada caracter
@@ -75,7 +76,8 @@ public class Lexer {
                     }
                     i++;
                 }
-                    // si no se encuentra comillas de cierre se marca 
+                    // Si 'cerrado' es true, la cadena es válida y se marca como STRING_LITERAL.
+                    // Si 'cerrado' es false, significa que falta la comilla de cierre y se marca como UNKNOWN.
                 tokens.add(new Token(sb.toString(),
                         cerrado ? TokenType.Type.STRING_LITERAL : TokenType.Type.UNKNOWN));
                 continue;
@@ -148,21 +150,24 @@ public class Lexer {
             if (Character.isLetter(c)) {
 
                 int inicio = i;
-
+                  //mientras sea una letra digito o _
                 while (i < n &&
                        (Character.isLetterOrDigit(linea.charAt(i)) ||
                         linea.charAt(i) == '_')) {
                     i++;
                 }
-
+                //palabra completa, y se pasa a mayúscula
                 String lexema = linea.substring(inicio, i);
                 String upper = lexema.toUpperCase();
 
                 // Buscar si coincide con alguna palabra reservada del enum
                 TokenType.Type tipo = obtenerPalabraReservada(upper);
 
+                //si se retorno la palabra reservada se agrega
                 if (tipo != null) {
                     tokens.add(new Token(lexema, tipo));
+                    
+                    //si el retorno fue null es un identificador
                 } else {
                     tokens.add(new Token(lexema, TokenType.Type.IDENTIFIER));
                 }
@@ -174,6 +179,8 @@ public class Lexer {
             // OPERADORES
             // ------------------------------------------------------------
             
+            //si encontré un signo = y el próximo caracter es también un =
+            //se encontró un == que no es un operador válido en vb
             if (c == '=' && i + 1 < n && linea.charAt(i + 1) == '=') {
                 tokens.add(new Token("==", TokenType.Type.OP_INVALID));
                 i += 2;
@@ -243,7 +250,9 @@ public class Lexer {
     // DETECTAR PALABRAS RESERVADAS DEL ENUM
     // ============================================================
     private TokenType.Type obtenerPalabraReservada(String upper) {
+        //se recorre todas las constantes de Enum
         for (TokenType.Type t : TokenType.Type.values()) {
+           //si coincide lo retorna
             if (t.name().equals(upper)) {
                 return t;
             }
